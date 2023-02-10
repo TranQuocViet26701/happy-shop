@@ -9,3 +9,5 @@ export type RegisterField = {
   password: string;
   retypePassword: string;
 };
+
+export type RegisterData = RegisterField & { username: string };

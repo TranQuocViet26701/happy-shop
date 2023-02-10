@@ -1,8 +1,7 @@
 import { InputField, PasswordField } from '@/components/FormControls';
 import { LogoColor } from '@/components/icons';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { LockOutlined } from '@mui/icons-material';
-import { Avatar, Box, Button, LinearProgress, Typography } from '@mui/material';
+import { Box, Button, LinearProgress, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { RegisterField } from '../../types';

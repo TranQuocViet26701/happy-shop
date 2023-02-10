@@ -94,7 +94,10 @@ export default function Header() {
     setMode('login');
   };
 
-  const handleCloseDialog = () => setOpen(false);
+  const handleCloseDialog = () => {
+    setMode('login');
+    setOpen(false);
+  };
 
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
