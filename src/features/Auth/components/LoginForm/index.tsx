@@ -1,10 +1,12 @@
 import { InputField, PasswordField } from '@/components/FormControls';
+import { LogoColor } from '@/components/icons';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { LockOutlined } from '@mui/icons-material';
 import { Avatar, Box, Button, LinearProgress, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { LoginField } from '../../types';
+import './styles.scss';
 
 const defaultValues: LoginField = {
   identifier: '',
@@ -49,12 +51,11 @@ export default function LoginForm({ onSubmit }: LoginFromProps) {
         alignItems: 'center',
         position: 'relative',
       }}
+      className="login"
     >
       {isSubmitting && <LinearProgress sx={{ width: '100%', mb: '5px' }} />}
 
-      <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-        <LockOutlined />
-      </Avatar>
+      <LogoColor className="logo" />
 
       <Typography component="h1" variant="h5" sx={{ marginBottom: 2 }}>
         Login
