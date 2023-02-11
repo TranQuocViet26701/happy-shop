@@ -3,11 +3,12 @@ import {
   Container,
   Divider,
   Grid,
+  Pagination,
   Paper,
   Typography,
 } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 // import productApi from '../../../api/productApi';
 // import FilterViewer from '../components/FilterViewer';
 // import ProductFilters from '../components/ProductFilters';
@@ -15,13 +16,18 @@ import { useLocation } from 'react-router-dom';
 // import ProductSkeletonList from '../components/ProductSkeletonList';
 // import ProductSort from '../components/ProductSort';
 import queryString from 'query-string';
-import productApi, { Pagination, ProductQueryParams } from '@/api/productApi';
+import productApi, {
+  Pagination as PaginationType,
+  ProductQueryParams,
+} from '@/api/productApi';
 import { Product } from '@/types';
 import { toast } from 'react-toastify';
 import ProductList from '../components/ProductList';
+import ProductSkeletonList from '../components/ProductSkeletonList';
 
 export default function ListPage() {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const queryParams = useMemo(() => {
     const search = queryString.parse(location.search, {
@@ -40,12 +46,12 @@ export default function ListPage() {
   console.log('Query params: ', queryParams);
 
   const [productList, setProductList] = useState<Product[]>([]);
-  const [pagination, setPagination] = useState<Pagination>({
+  const [pagination, setPagination] = useState<PaginationType>({
     page: 1,
     limit: 12,
     total: 12,
   });
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -68,17 +74,20 @@ export default function ListPage() {
     fetchProducts();
   }, [queryParams]);
 
-  // const handlePageChange = (event, value) => {
-  //   history.push({
-  //     pathname: history.location.pathname,
-  //     search: queryString.stringify({
-  //       ...queryParams,
-  //       _page: value,
-  //     }),
-  //   });
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    navigate({
+      pathname: location.pathname,
+      search: queryString.stringify({
+        ...queryParams,
+        _page: value,
+      }),
+    });
 
-  //   setLoading(true);
-  // };
+    setLoading(true);
+  };
 
   // const handleSortChange = (newValue) => {
   //   history.push({
@@ -166,15 +175,14 @@ export default function ListPage() {
               {/* Filter */}
               {/* <FilterViewer filters={queryParams} onChange={handleChange} /> */}
               {loading ? (
-                // <ProductSkeletonList length={queryParams.limit} />
-                <Typography>Product Skeleton</Typography>
+                <ProductSkeletonList length={queryParams._limit as number} />
               ) : (
                 <ProductList data={productList} />
               )}
             </Grid>
           </Grid>
         </Paper>
-        {/* <Pagination
+        <Pagination
           color="primary"
           count={Math.ceil(pagination.total / pagination.limit)}
           page={pagination.page}
@@ -190,7 +198,7 @@ export default function ListPage() {
               },
             },
           ]}
-        /> */}
+        />
       </Container>
     </Box>
   );
