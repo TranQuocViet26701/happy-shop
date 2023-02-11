@@ -1,6 +1,11 @@
 import { Product } from '@/types';
 import axiosClient from './axiosClient';
 
+export type RangePrice = {
+  salePrice_gte: number;
+  salePrice_lte: number;
+};
+
 export type ProductQueryParams = {
   _page: number;
   _start: number;
@@ -8,7 +13,8 @@ export type ProductQueryParams = {
   _sort: string;
   isFreeShip: boolean;
   isPromotion: boolean;
-};
+  'category.id': number;
+} & RangePrice;
 
 export type Pagination = {
   page: number;

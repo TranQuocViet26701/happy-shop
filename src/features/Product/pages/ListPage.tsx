@@ -1,3 +1,8 @@
+import productApi, {
+  Pagination as PaginationType,
+  ProductQueryParams,
+} from '@/api/productApi';
+import { Product } from '@/types';
 import {
   Box,
   Container,
@@ -5,31 +10,22 @@ import {
   Grid,
   Pagination,
   Paper,
-  Typography,
 } from '@mui/material';
+import queryString from 'query-string';
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-// import productApi from '../../../api/productApi';
-// import FilterViewer from '../components/FilterViewer';
-// import ProductFilters from '../components/ProductFilters';
-// import ProductList from '../components/ProductList';
-// import ProductSkeletonList from '../components/ProductSkeletonList';
-// import ProductSort from '../components/ProductSort';
-import queryString from 'query-string';
-import productApi, {
-  Pagination as PaginationType,
-  ProductQueryParams,
-} from '@/api/productApi';
-import { Product } from '@/types';
 import { toast } from 'react-toastify';
+import FilterViewer from '../components/FilterViewer';
+import ProductFilters from '../components/ProductFilters';
 import ProductList from '../components/ProductList';
 import ProductSkeletonList from '../components/ProductSkeletonList';
+import ProductSort from '../components/ProductSort';
 
 export default function ListPage() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const queryParams = useMemo(() => {
+  const queryParams = useMemo<Partial<ProductQueryParams>>(() => {
     const search = queryString.parse(location.search, {
       parseBooleans: true,
       parseNumbers: true,
@@ -40,7 +36,7 @@ export default function ListPage() {
       _page: search._page || 1,
       _limit: search._limit || 12,
       _sort: search._sort || 'salePrice:ASC',
-    };
+    } as Partial<ProductQueryParams>;
   }, [location.search]);
 
   console.log('Query params: ', queryParams);
@@ -89,54 +85,54 @@ export default function ListPage() {
     setLoading(true);
   };
 
-  // const handleSortChange = (newValue) => {
-  //   history.push({
-  //     pathname: history.location.pathname,
-  //     search: queryString.stringify({
-  //       ...queryParams,
-  //       _sort: newValue,
-  //     }),
-  //   });
+  const handleSortChange = (newValue: string) => {
+    navigate({
+      pathname: location.pathname,
+      search: queryString.stringify({
+        ...queryParams,
+        _sort: newValue,
+      }),
+    });
 
-  //   setLoading(true);
-  // };
+    setLoading(true);
+  };
 
-  // const handleFilterChange = (newFilters) => {
-  //   const changedFilters = {
-  //     ...queryParams,
-  //     ...newFilters,
-  //   };
+  const handleFilterChange = (newFilters: Partial<ProductQueryParams>) => {
+    const changedFilters = {
+      ...queryParams,
+      ...newFilters,
+    };
 
-  //   // delete isFreeShip and isPromotion if they are set to false
-  //   if (
-  //     changedFilters.hasOwnProperty('isFreeShip') &&
-  //     !changedFilters.isFreeShip
-  //   ) {
-  //     delete changedFilters.isFreeShip;
-  //   }
-  //   if (
-  //     changedFilters.hasOwnProperty('isPromotion') &&
-  //     !changedFilters.isPromotion
-  //   ) {
-  //     delete changedFilters.isPromotion;
-  //   }
+    // delete isFreeShip and isPromotion if they are set to false
+    if (
+      changedFilters.hasOwnProperty('isFreeShip') &&
+      !changedFilters.isFreeShip
+    ) {
+      delete changedFilters.isFreeShip;
+    }
+    if (
+      changedFilters.hasOwnProperty('isPromotion') &&
+      !changedFilters.isPromotion
+    ) {
+      delete changedFilters.isPromotion;
+    }
 
-  //   history.push({
-  //     pathname: history.location.pathname,
-  //     search: queryString.stringify(changedFilters),
-  //   });
+    navigate({
+      pathname: location.pathname,
+      search: queryString.stringify(changedFilters),
+    });
 
-  //   setLoading(true);
-  // };
+    setLoading(true);
+  };
 
-  // const handleChange = (newFilters) => {
-  //   history.push({
-  //     pathname: history.location.pathname,
-  //     search: queryString.stringify(newFilters),
-  //   });
+  const handleChange = (newFilters: Partial<ProductQueryParams>) => {
+    navigate({
+      pathname: location.pathname,
+      search: queryString.stringify(newFilters),
+    });
 
-  //   setLoading(true);
-  // };
+    setLoading(true);
+  };
 
   return (
     <Box>
@@ -150,11 +146,10 @@ export default function ListPage() {
                 width: '250px',
               }}
             >
-              {/* <ProductFilters
-                filters={queryParams}
+              <ProductFilters
+                filters={queryParams as Partial<ProductQueryParams>}
                 onChange={handleFilterChange}
-              /> */}
-              Product filters
+              />
             </Grid>
             <Divider orientation="vertical" flexItem />
             {/* Right column */}
@@ -166,14 +161,16 @@ export default function ListPage() {
               }}
             >
               {/* Sort */}
-              {/* <ProductSort
-                value={queryParams._sort}
+              <ProductSort
+                value={queryParams._sort as string}
                 onSortChange={handleSortChange}
-              /> */}
-              Product Sort
+              />
               <Divider />
               {/* Filter */}
-              {/* <FilterViewer filters={queryParams} onChange={handleChange} /> */}
+              <FilterViewer
+                filters={queryParams as Partial<ProductQueryParams>}
+                onChange={handleChange}
+              />
               {loading ? (
                 <ProductSkeletonList length={queryParams._limit as number} />
               ) : (
