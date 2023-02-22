@@ -42,3 +42,11 @@ export type Product = {
   updated_at: string;
   updated_by?: User;
 };
+
+export type CartItem = {
+  id: number;
+  product: Product;
+  quantity: number;
+};
+
+export type PropType<TObj, TProp extends keyof TObj> = TObj[TProp];

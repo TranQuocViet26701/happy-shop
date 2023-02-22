@@ -39,8 +39,6 @@ export default function ListPage() {
     } as Partial<ProductQueryParams>;
   }, [location.search]);
 
-  console.log('Query params: ', queryParams);
-
   const [productList, setProductList] = useState<Product[]>([]);
   const [pagination, setPagination] = useState<PaginationType>({
     page: 1,

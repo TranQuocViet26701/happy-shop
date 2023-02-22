@@ -6,12 +6,12 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { LoginField } from './types';
 
 export type UserState = {
-  current: User;
+  current: User | null;
   settings: {};
 };
 
 const initialState = {
-  current: {},
+  current: null,
   settings: {},
 } as UserState;
 
@@ -44,7 +44,14 @@ export const register = createAsyncThunk(
 export const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {},
+  reducers: {
+    logout: (state) => {
+      localStorage.removeItem(StorageKeys.USER);
+      localStorage.removeItem(StorageKeys.TOKEN);
+
+      state.current = null;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(login.fulfilled, (state, action) => {
       state.current = action.payload;
@@ -56,6 +63,6 @@ export const userSlice = createSlice({
   },
 });
 
-// export const { logout } = userSlice.actions;
+export const { logout } = userSlice.actions;
 
 export default userSlice.reducer;

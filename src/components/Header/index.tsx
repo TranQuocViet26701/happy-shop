@@ -1,12 +1,13 @@
+import { RootState } from '@/app/store';
 import Login from '@/features/Auth/components/Login';
 import Register from '@/features/Auth/components/Register';
-import AccountCircle from '@mui/icons-material/AccountCircle';
+import { logout } from '@/features/Auth/userSlice';
 import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from '@mui/icons-material/Menu';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { Button, Dialog, DialogContent, Link } from '@mui/material';
+import { Avatar, Button, Dialog, DialogContent, Link } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import Badge from '@mui/material/Badge';
 import Box from '@mui/material/Box';
@@ -17,6 +18,8 @@ import MenuItem from '@mui/material/MenuItem';
 import { alpha, styled } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import * as React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import LogoIcon from '../icons/Logo';
 import './styles.scss';
 
@@ -63,6 +66,10 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 type ModeType = 'login' | 'register';
 
 export default function Header() {
+  const navigate = useNavigate();
+  const userState = useSelector((state: RootState) => state.user);
+  const isLoggedIn = !!userState.current;
+  const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
@@ -99,6 +106,15 @@ export default function Header() {
     setOpen(false);
   };
 
+  const handleLogoutClick = () => {
+    dispatch(logout());
+    handleMenuClose();
+  };
+
+  const handleCartClick = () => {
+    navigate('/cart');
+  };
+
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
     <Menu
@@ -116,8 +132,8 @@ export default function Header() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={handleMenuClose}>My Account</MenuItem>
+      <MenuItem onClick={handleLogoutClick}>Logout</MenuItem>
     </Menu>
   );
 
@@ -143,6 +159,7 @@ export default function Header() {
           size="large"
           aria-label="show 17 new notifications"
           color="inherit"
+          onClick={handleCartClick}
         >
           <Badge badgeContent={17} color="error">
             <ShoppingCartIcon />
@@ -150,17 +167,40 @@ export default function Header() {
         </IconButton>
         <p>Cart</p>
       </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          size="large"
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
-          <AccountCircle />
-        </IconButton>
-        <p>Profile</p>
+      <MenuItem>
+        {isLoggedIn ? (
+          <IconButton
+            size="large"
+            edge="end"
+            aria-label="account of current user"
+            aria-controls={menuId}
+            aria-haspopup="true"
+            onClick={handleProfileMenuOpen}
+            color="inherit"
+          >
+            <Avatar
+              alt={userState.current?.fullName}
+              src="/static/images/avatar/1.jpg"
+            />
+          </IconButton>
+        ) : (
+          <Button
+            variant="outlined"
+            sx={{
+              backgroundColor: '#fff',
+              '&:hover': {
+                backgroundColor: 'transparent',
+                color: '#fff',
+                borderColor: '#fff',
+              },
+              margin: '12px',
+              fontWeight: 'bold',
+            }}
+            onClick={handleOpenDialog}
+          >
+            Login
+          </Button>
+        )}
       </MenuItem>
     </Menu>
   );
@@ -200,38 +240,45 @@ export default function Header() {
               size="large"
               aria-label="show 17 new notifications"
               color="inherit"
+              onClick={handleCartClick}
             >
               <Badge badgeContent={17} color="error">
                 <ShoppingCartIcon />
               </Badge>
             </IconButton>
-            {/* <IconButton
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton> */}
-            <Button
-              variant="outlined"
-              sx={{
-                backgroundColor: '#fff',
-                '&:hover': {
-                  backgroundColor: 'transparent',
-                  color: '#fff',
-                  borderColor: '#fff',
-                },
-                margin: '12px',
-                fontWeight: 'bold',
-              }}
-              onClick={handleOpenDialog}
-            >
-              Login
-            </Button>
+            {isLoggedIn ? (
+              <IconButton
+                size="large"
+                edge="end"
+                aria-label="account of current user"
+                aria-controls={menuId}
+                aria-haspopup="true"
+                onClick={handleProfileMenuOpen}
+                color="inherit"
+              >
+                <Avatar
+                  alt={userState.current?.fullName}
+                  src="/static/images/avatar/1.jpg"
+                />
+              </IconButton>
+            ) : (
+              <Button
+                variant="outlined"
+                sx={{
+                  backgroundColor: '#fff',
+                  '&:hover': {
+                    backgroundColor: 'transparent',
+                    color: '#fff',
+                    borderColor: '#fff',
+                  },
+                  margin: '12px',
+                  fontWeight: 'bold',
+                }}
+                onClick={handleOpenDialog}
+              >
+                Login
+              </Button>
+            )}
           </Box>
           <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
             <IconButton

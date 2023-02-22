@@ -61,9 +61,10 @@ const productApi = {
       },
     };
   },
-  get(id: string) {
+  async get(id: Product['id']) {
     const url = `/products/${id}`;
-    return axiosClient.get(url);
+    const { data: product } = await axiosClient.get<Product>(url);
+    return product;
   },
 };
 

@@ -14,8 +14,6 @@ export default function Login({ onCloseDialog }: LoginProps) {
   const dispatch = useDispatch();
 
   const handleSubmit = async (values: LoginField) => {
-    console.log('Login values: ', values);
-
     try {
       const action = login(values);
       const resultAction = await dispatch(action as any);
@@ -28,7 +26,6 @@ export default function Login({ onCloseDialog }: LoginProps) {
 
       // Login successful
       toast.success('Login successful');
-      console.log('Login result: ', data);
     } catch (error) {
       console.log('error: ', error);
       toast.error((error as Error).message);
