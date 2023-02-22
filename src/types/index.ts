@@ -49,4 +49,6 @@ export type CartItem = {
   quantity: number;
 };
 
+export type PaymentOption = 'visa' | 'master-card';
+
 export type PropType<TObj, TProp extends keyof TObj> = TObj[TProp];

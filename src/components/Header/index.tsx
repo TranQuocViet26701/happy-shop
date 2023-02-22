@@ -2,6 +2,7 @@ import { RootState } from '@/app/store';
 import Login from '@/features/Auth/components/Login';
 import Register from '@/features/Auth/components/Register';
 import { logout } from '@/features/Auth/userSlice';
+import { cartItemsCountSelector } from '@/features/Cart/selectors';
 import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from '@mui/icons-material/Menu';
 import MoreIcon from '@mui/icons-material/MoreVert';
@@ -68,6 +69,7 @@ type ModeType = 'login' | 'register';
 export default function Header() {
   const navigate = useNavigate();
   const userState = useSelector((state: RootState) => state.user);
+  const cartItemsCount = useSelector(cartItemsCountSelector);
   const isLoggedIn = !!userState.current;
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -115,6 +117,12 @@ export default function Header() {
     navigate('/cart');
   };
 
+  const CartIcon = () => (
+    <Badge badgeContent={cartItemsCount} color="error">
+      <ShoppingCartIcon />
+    </Badge>
+  );
+
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
     <Menu
@@ -161,9 +169,7 @@ export default function Header() {
           color="inherit"
           onClick={handleCartClick}
         >
-          <Badge badgeContent={17} color="error">
-            <ShoppingCartIcon />
-          </Badge>
+          <CartIcon />
         </IconButton>
         <p>Cart</p>
       </MenuItem>
@@ -242,9 +248,7 @@ export default function Header() {
               color="inherit"
               onClick={handleCartClick}
             >
-              <Badge badgeContent={17} color="error">
-                <ShoppingCartIcon />
-              </Badge>
+              <CartIcon />
             </IconButton>
             {isLoggedIn ? (
               <IconButton
