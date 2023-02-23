@@ -155,34 +155,32 @@ export default function FilterViewer({
     );
   };
 
+  const handleClick = (filter: any) => {
+    if (filter.isDeletable) return;
+    if (filter.onToggle) {
+      const newFilters = filter.onToggle(filters);
+
+      if (onChange) onChange(newFilters);
+    }
+  };
+
+  const handleDelete = (filter: any) => {
+    if (!filter.isDeletable) return;
+    if (filter.onRemove) {
+      const newFilters = filter.onRemove(filters);
+
+      if (onChange) onChange(newFilters);
+    }
+  };
+
   return (
     <Box sx={{ py: 2, ml: 2 }}>
       {visibleFilterList.map((filter) => (
         <Chip
           key={filter.id}
           label={filter.getLabel(filters)}
-          onClick={
-            filter.isDeletable
-              ? null
-              : () => {
-                  if (filter.onToggle) {
-                    const newFilters = filter.onToggle(filters);
-
-                    if (onChange) onChange(newFilters);
-                  }
-                }
-          }
-          onDelete={
-            filter.isDeletable
-              ? () => {
-                  if (filter.onRemove) {
-                    const newFilters = filter.onRemove(filters);
-
-                    if (onChange) onChange(newFilters);
-                  }
-                }
-              : null
-          }
+          onClick={() => handleClick(filter)}
+          onDelete={() => handleDelete(filter)}
           color={filter.isActive(filters) ? 'primary' : 'default'}
           size="small"
           sx={{

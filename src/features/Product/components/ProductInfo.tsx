@@ -44,9 +44,11 @@ export default function ProductInfo({ product }: ProductInfoProps) {
               fontWeight: '500',
               mr: 1.5,
             },
-            promotionPercent && {
-              color: 'rgb(255, 66, 78)',
-            },
+            promotionPercent
+              ? {
+                  color: 'rgb(255, 66, 78)',
+                }
+              : null,
           ]}
         >
           {utils.formatMoney(salePrice)}
