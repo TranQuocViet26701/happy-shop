@@ -8,4 +8,4 @@ RUN yarn install
 
 CMD [ "yarn", "dev" ]
 
-EXPOSE 5173
+EXPOSE 8080
